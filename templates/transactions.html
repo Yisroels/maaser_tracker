@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}All Transactions{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h1>All Transactions <small class="text-muted">(total: {{ transactions|length }})</small></h1>
+  <!-- Search bar -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search description, note, source..." autofocus>
+    </div>
+    <div class="col-md-3">
+      <select id="categoryFilter" class="form-select form-select-lg">
+        <option value="">All categories</option>
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+        <option value="maaser_given">Maaser Given</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">Back to Dashboard</a>
+    </div>
+  </div>
+  <!-- Transactions table -->
+  <div class="table-responsive">
+    <form method="POST" action="{{ url_for('bulk_delete_transactions') }}">
+      <table class="table table-hover align-middle" id="transactionsTable">
+        <thead class="table-primary">
+          <tr>
+            <th><input type="checkbox" id="selectAll" class="form-check-input"></th> <!-- Bulk select -->
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Description / Note</th>
+            <th>Source</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsBody">
+          {% for t in transactions %}
+          <tr data-category="{{ t.category }}">
+            <td><input type="checkbox" name="selected_ids" value="{{ t.id }}" class="form-check-input"></td>
+            <td>{{ t.date }}</td>
+            <td class="text-end fw-bold {% if t.amount > 0 %}text-success{% else %}text-danger{% endif %}">
+              € {{ "%.2f"|format(t.amount|abs) }}
+              {% if t.amount < 0 %}(−){% endif %}
+            </td>
+            <td>
+              <div>{{ t.description|truncate(80) }}</div>
+              {% if t.note %}
+                <small class="text-muted"><em>{{ t.note }}</em></small>
+              {% endif %}
+            </td>
+            <td><span class="badge bg-secondary">{{ t.source }}</span></td>
+            <td>
+              <span class="badge {% if t.category == 'income' %}bg-success
+                           {% elif t.category == 'maaser_given' %}bg-warning text-dark
+                           {% else %}bg-danger{% endif %}">
+                {{ t.category.replace('_', ' ')|title }}
+              </span>
+            </td>
+            <td>
+              <a href="{{ url_for('edit_transaction', id=t.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+              <a href="{{ url_for('delete_transaction', id=t.id) }}" class="btn btn-sm btn-outline-danger ms-1" onclick="return confirm('Are you sure?');">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('Delete selected transactions? This is permanent!');">Delete Selected</button>
+    </form>
+  </div>
+</div>
+<script>
+  // Live search + filter
+  const searchInput = document.getElementById('searchInput');
+  const categoryFilter = document.getElementById('categoryFilter');
+  const rows = document.querySelectorAll('#transactionsBody tr');
+  function filterTable() {
+    const query = searchInput.value.toLowerCase();
+    const cat = categoryFilter.value;
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const rowCat = row.dataset.category;
+      const matchesSearch = text.includes(query);
+      const matchesCat = cat === '' || rowCat === cat;
+      row.style.display = (matchesSearch && matchesCat) ? '' : 'none';
+    });
+  }
+  searchInput.addEventListener('input', filterTable);
+  categoryFilter.addEventListener('change', filterTable);
+
+  // Bulk select all checkbox
+  document.getElementById('selectAll').addEventListener('click', function() {
+    document.querySelectorAll('input[name="selected_ids"]').forEach(cb => cb.checked = this.checked);
+  });
+</script>
+{% endblock %}

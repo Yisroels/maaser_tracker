@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Edit Transaction{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h2>Edit Transaction</h2>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <form method="POST">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Date</label>
+              <input type="date" class="form-control" value="{{ transaction.date }}" disabled>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Amount</label>
+              <input type="text" class="form-control" value="€ {{ "%.2f"|format(transaction.amount|abs) }}" disabled>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Original Description</label>
+              <textarea class="form-control" rows="4" disabled>{{ transaction.description }}</textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Source</label>
+              <input type="text" class="form-control" value="{{ transaction.source }}" disabled>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+              <select name="category" class="form-select form-select-lg" required>
+                <option value="income" {% if transaction.category == 'income' %}selected{% endif %}>Income</option>
+                <option value="expense" {% if transaction.category == 'expense' %}selected{% endif %}>Expense</option>
+                <option value="maaser_given" {% if transaction.category == 'maaser_given' %}selected{% endif %}>Maaser Given</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold">Personal Note (optional)</label>
+              <textarea name="note" class="form-control" rows="3" placeholder="e.g. This was for the new sofa, not maaser">{{ transaction.note or '' }}</textarea>
+            </div>
+
+            <div class="d-flex gap-3">
+              <button type="submit" class="btn btn-success btn-lg px-5">Save Changes</button>
+              <a href="{{ url_for('transactions') }}" class="btn btn-secondary btn-lg px-5">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

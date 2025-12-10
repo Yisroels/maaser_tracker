@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Upload Statements{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-7">
+    <h2 class="mb-4">Upload Bank Statements</h2>
+    
+    <div class="card border-primary">
+      <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+          <div class="mb-4">
+            <label class="form-label fw-bold">Select file (ING Belgium CSV works now!)</label>
+            <input type="file" name="file" class="form-control form-control-lg" accept=".csv,.pdf,.xlsx" required>
+            <div class="form-text">Others (Amex PDF, Beobank Excel, Wise) coming in the next steps</div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg px-5">Upload & Import</button>
+          <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg px-5 ms-3">Back</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

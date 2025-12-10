@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Add Manual Transaction{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <h2 class="mb-4">Add Manual Transaction</h2>
+    
+    <form method="POST" action="{{ url_for('manual_entry') }}" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label class="form-label">Date</label>
+        <input type="date" name="date" class="form-control" required value="{{ today }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Amount (€)</label>
+        <input type="number" step="0.01" name="amount" class="form-control" placeholder="e.g. 1500.00 or -100.00 for maaser given" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Type</label>
+        <select name="category" class="form-select" required>
+          <option value="income">Income (salary, gift, refund…)</option>
+          <option value="expense">Regular Expense (ignore for maaser)</option>
+          <option value="maaser_given">Maaser / Charity Given</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Source (optional)</label>
+        <input type="text" name="source" class="form-control" placeholder="Cash, Gift, Salary April…">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description / Note</label>
+        <textarea name="note" class="form-control" rows="3" placeholder="Any details you want to remember…"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success btn-lg px-5">Save Transaction</button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg px-5 ms-3">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

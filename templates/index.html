@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>{{ title }}</h1>
+      <div>
+        <a href="{{ url_for('index', period='gregorian') }}" 
+           class="btn {% if period != 'hebrew' %}btn-primary{% else %}btn-outline-primary{% endif %} btn-lg">
+          Gregorian {{ now_year }}
+        </a>
+        <a href="{{ url_for('index', period='hebrew') }}" 
+           class="btn {% if period == 'hebrew' %}btn-primary{% else %}btn-outline-primary{% endif %} btn-lg ms-2">
+          Hebrew {{ hebrew_year }} <small>(תשפ״{{ hebrew_year - 5000 }})</small>
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card text-center bg-white shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary">Total Income</h5>
+            <h2 class="text-dark">{{ income }}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center bg-white shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-success">Maaser Already Given</h5>
+            <h2 class="text-dark">{{ maaser_given }}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center bg-white shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title {{ owed_class }}">Still Owed / Overgiven</h5>
+            <h2 class="{{ owed_class }}">{{ owed }}</h2>
+            <small class="text-muted">10 % of income minus given</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5">
+      <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg px-5">Upload Statements</a>
+      <a href="{{ url_for('manual_entry') }}" class="btn btn-outline-secondary btn-lg px-5 ms-3">Add Manual</a>
+      <a href="{{ url_for('transactions') }}" class="btn btn-info btn-lg px-5 ms-3">All Transactions</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
